@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/ui/icon";
 
+interface PriceGroup {
+  title: string;
+  icon: string;
+  note?: string;
+  items: { name: string; unit: string; price: string }[];
+}
+
 const HERO_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/4d2629cd-5f15-439f-b795-4438ec6b5656.jpg";
 const PILE_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/8cae692d-3452-4082-8581-f4947201adf3.jpg";
 const SEPTIC_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/96fb2131-7b8e-4fb0-9364-6a48603bcad8.jpg";
@@ -14,84 +21,75 @@ const services = [
   { icon: "Shovel", title: "Бурение", desc: "Бурение под фундамент и под столбы забора. Скважины любой глубины и диаметра" },
 ];
 
-const priceGroups = [
+const priceGroups: PriceGroup[] = [
   {
-    title: "Септики D1 м",
-    icon: "Droplets",
-    items: [
-      { name: "Кольцо КС 10.9 (1м × 0.9м)", unit: "шт", price: "3 200" },
-      { name: "Монтаж кольца КС 10.9", unit: "шт", price: "1 500" },
-      { name: "Крышка перекрытия 1м", unit: "шт", price: "2 800" },
-      { name: "Днище (дно колодца) 1м", unit: "шт", price: "3 500" },
-      { name: "Септик под ключ (3 кольца)", unit: "компл.", price: "28 000" },
-    ],
-  },
-  {
-    title: "Септики D2 м",
-    icon: "Droplets",
-    items: [
-      { name: "Кольцо КС 20.9 (2м × 0.9м)", unit: "шт", price: "7 500" },
-      { name: "Монтаж кольца КС 20.9", unit: "шт", price: "2 500" },
-      { name: "Крышка перекрытия 2м", unit: "шт", price: "6 000" },
-      { name: "Днище (дно колодца) 2м", unit: "шт", price: "7 000" },
-      { name: "Септик под ключ (3 кольца)", unit: "компл.", price: "52 000" },
-    ],
-  },
-  {
-    title: "Бурение под фундамент",
-    icon: "Drill",
-    items: [
-      { name: "Бурение Ø150мм, до 3м", unit: "шт", price: "2 500" },
-      { name: "Бурение Ø150мм, до 5м", unit: "шт", price: "4 000" },
-      { name: "Бурение Ø200мм, до 3м", unit: "шт", price: "3 500" },
-      { name: "Бурение Ø200мм, до 5м", unit: "шт", price: "5 500" },
-      { name: "Армирование + заливка бетоном", unit: "п.м.", price: "1 200" },
-    ],
-  },
-  {
-    title: "Бурение под забор",
-    icon: "Fence",
-    items: [
-      { name: "Бурение Ø100мм, до 1.5м", unit: "шт", price: "800" },
-      { name: "Бурение Ø100мм, до 2м", unit: "шт", price: "1 100" },
-      { name: "Бурение Ø150мм, до 2м", unit: "шт", price: "1 600" },
-      { name: "Установка столба + бетонирование", unit: "шт", price: "700" },
-    ],
-  },
-  {
-    title: "Винтовые сваи",
+    title: "Монтаж винтовых свай",
     icon: "RotateCcw",
+    note: "* Указана средняя стоимость за единицу товара, расчёт по каждому заказу индивидуальный. Постоянным клиентам дополнительные скидки и спец. предложения. Возможна продажа свай без монтажа.",
     items: [
-      { name: "Свая 57мм × 2500мм", unit: "шт", price: "1 200" },
-      { name: "Свая 57мм × 3000мм", unit: "шт", price: "1 500" },
-      { name: "Свая 76мм × 2500мм", unit: "шт", price: "1 600" },
-      { name: "Свая 76мм × 3000мм", unit: "шт", price: "1 900" },
-      { name: "Свая 89мм × 3000мм", unit: "шт", price: "2 400" },
-      { name: "Монтаж сваи (завинчивание)", unit: "шт", price: "700" },
-      { name: "Оголовок на сваю", unit: "шт", price: "350" },
+      { name: "79×3,5×2000 мм", unit: "шт", price: "4 100" },
+      { name: "76×3,5×2500 мм", unit: "шт", price: "4 400" },
+      { name: "76×3,5×3000 мм", unit: "шт", price: "4 700" },
+      { name: "89×3,5×2000 мм", unit: "шт", price: "5 100" },
+      { name: "89×3,5×2500 мм", unit: "шт", price: "5 400" },
+      { name: "89×3,5×3000 мм", unit: "шт", price: "5 700" },
+      { name: "108×4×2000 мм", unit: "шт", price: "6 100" },
+      { name: "108×4×2500 мм", unit: "шт", price: "6 400" },
+      { name: "108×4×3000 мм", unit: "шт", price: "6 700" },
     ],
   },
   {
-    title: "Забивные сваи",
+    title: "Монтаж жб свай",
     icon: "Layers",
+    note: "* Стоимость указана за сваю с монтажом (ЗАБИВКА). Обрезка и распушовка свай считается отдельно. Минимальная сумма заказа от 150 000 руб.",
     items: [
-      { name: "Свая С30-30 (3м)", unit: "шт", price: "2 800" },
-      { name: "Свая С50-30 (5м)", unit: "шт", price: "4 500" },
-      { name: "Свая С60-30 (6м)", unit: "шт", price: "5 800" },
-      { name: "Погружение (забивка) сваи", unit: "шт", price: "1 200" },
-      { name: "Срубка головы сваи", unit: "шт", price: "600" },
+      { name: "С30.15", unit: "шт", price: "от 8 500" },
+      { name: "С40.15", unit: "шт", price: "от 9 500" },
+      { name: "С30.20", unit: "шт", price: "от 10 000" },
+      { name: "С40.20", unit: "шт", price: "от 11 000" },
     ],
   },
   {
-    title: "Сопутствующие услуги и материалы",
-    icon: "Wrench",
+    title: "Оголовки жб свай",
+    icon: "Package",
+    note: "! Стоимость доставки по Самаре в пределах 30 км от города — бесплатно, далее стоимость доставки необходимо уточнять у менеджера!",
     items: [
-      { name: "Геотекстиль", unit: "м²", price: "45" },
-      { name: "Труба ПНД 32мм", unit: "п.м.", price: "85" },
-      { name: "Труба ПВХ канализационная 110мм", unit: "п.м.", price: "180" },
-      { name: "Рытьё траншеи (экскаватор)", unit: "м³", price: "1 500" },
-      { name: "Обратная засыпка и трамбовка", unit: "м³", price: "800" },
-      { name: "Вывоз грунта", unit: "м³", price: "1 200" },
+      { name: "ОГ150×150", unit: "шт", price: "1 100" },
+      { name: "ОГ200×200", unit: "шт", price: "1 300" },
+      { name: "ОГ300×300", unit: "шт", price: "1 500" },
+      { name: "Обрезка сваи", unit: "шт", price: "750" },
+      { name: "Распушовка сваи", unit: "шт", price: "750" },
+    ],
+  },
+  {
+    title: "Шнековое бурение",
+    icon: "Drill",
+    note: "Услуги бурения от 300 до 6 000 руб. за погонный метр, в зависимости от диаметра бурения.",
+    items: [
+      { name: "Ø 100 мм", unit: "п.м.", price: "300" },
+      { name: "Ø 200 мм", unit: "п.м.", price: "300–350" },
+      { name: "Ø 250 мм", unit: "п.м.", price: "300–350" },
+      { name: "Ø 300 мм", unit: "п.м.", price: "300–350" },
+      { name: "Ø 350 мм", unit: "п.м.", price: "400" },
+      { name: "Ø 400 мм", unit: "п.м.", price: "450" },
+      { name: "Ø 500 мм", unit: "п.м.", price: "550" },
+      { name: "Ø 600 мм", unit: "п.м.", price: "650" },
+      { name: "Ø 900 мм", unit: "п.м.", price: "1 500" },
+      { name: "Ø 1250 мм", unit: "п.м.", price: "3 000" },
+      { name: "Ø 1850 мм", unit: "п.м.", price: "6 000" },
+    ],
+  },
+  {
+    title: "Монтаж септиков и колодцев",
+    icon: "Droplets",
+    note: "* Цены указаны в розницу за наличный расчёт, стоимость каждого заказа рассчитывается индивидуально.",
+    items: [
+      { name: "Монтаж септика d=1000 мм", unit: "компл.", price: "от 35 000*" },
+      { name: "Монтаж септика d=1500 мм", unit: "компл.", price: "от 42 000*" },
+      { name: "Монтаж перелива", unit: "шт", price: "от 5 000" },
+      { name: "Монтаж водяного колодца d=1000 мм", unit: "компл.", price: "6 500**" },
+      { name: "Прокладка коммуникаций", unit: "п.м.", price: "от 2 500" },
+      { name: "Скобирование", unit: "шов", price: "1 500" },
     ],
   },
 ];
@@ -441,6 +439,11 @@ export default function Index() {
                       </div>
                     ))}
                   </div>
+                  {group.note && (
+                    <div style={{ marginTop: 14, padding: "12px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderLeft: "3px solid rgba(255,102,0,0.5)" }}>
+                      <p style={{ fontSize: 12, color: "var(--bars-gray)", fontFamily: "Roboto, sans-serif", lineHeight: 1.6, margin: 0 }}>{group.note}</p>
+                    </div>
+                  )}
                 </div>
               </Section>
             ))}
