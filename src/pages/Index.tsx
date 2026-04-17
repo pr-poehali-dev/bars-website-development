@@ -1,35 +1,104 @@
 import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/ui/icon";
 
-const HERO_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/f5728262-3b3c-4f0e-98f5-13e3f65c6e09.jpg";
-const TEAM_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/4ae5f471-57ad-40f8-8766-ff1cf4bf4554.jpg";
-const BUILD_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/1c01fc6d-524f-4ee4-ac3b-7c474bfee7eb.jpg";
+interface PriceGroup {
+  title: string;
+  icon: string;
+  note?: string;
+  items: { name: string; unit: string; price: string }[];
+}
+
+const HERO_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/4d2629cd-5f15-439f-b795-4438ec6b5656.jpg";
+const PILE_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/bucket/9a60a863-7cb6-4af3-b4cd-98477b44305e.jpeg";
+const SEPTIC_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/bucket/daf5e4aa-8265-4e69-91b6-099ebafdf605.jpg";
 
 const services = [
-  { icon: "Building2", title: "Гражданское строительство", desc: "Жилые дома, коттеджи, многоквартирные комплексы под ключ", price: "от 25 000 ₽/м²" },
-  { icon: "Factory", title: "Промышленное строительство", desc: "Производственные цеха, склады, административные здания", price: "от 18 000 ₽/м²" },
-  { icon: "Hammer", title: "Капитальный ремонт", desc: "Реконструкция и ремонт зданий любой сложности", price: "от 8 000 ₽/м²" },
-  { icon: "Layers", title: "Фундаментные работы", desc: "Монолитные, свайные, ленточные фундаменты", price: "от 5 000 ₽/м²" },
-  { icon: "Wrench", title: "Инженерные системы", desc: "Электрика, водоснабжение, отопление, вентиляция", price: "от 3 500 ₽/м²" },
-  { icon: "Truck", title: "Земляные работы", desc: "Планировка, рытьё котлованов, вывоз грунта", price: "от 1 200 ₽/м³" },
+  { icon: "Drill", title: "Винтовые сваи", desc: "Изготовление и монтаж винтовых свай для любых типов грунта. Фундаменты под дома, заборы, беседки, террасы" },
+  { icon: "Layers", title: "Забивные сваи", desc: "Производство и погружение железобетонных забивных свай. Подходят для тяжёлых конструкций и нестабильных грунтов" },
+  { icon: "Droplets", title: "Септики и канализация", desc: "Проектирование и монтаж автономных септиков, ливневой и бытовой канализации под ключ" },
+  { icon: "Waves", title: "Колодцы", desc: "Рытьё и обустройство питьевых и технических колодцев. Кольца ЖБИ, донный фильтр, крышка" },
+  { icon: "GitBranch", title: "Прокладка коммуникаций", desc: "Водопровод, канализация, дренаж. Траншейная и бестраншейная прокладка труб любого диаметра" },
+  { icon: "Shovel", title: "Бурение", desc: "Бурение под фундамент и под столбы забора. Скважины любой глубины и диаметра" },
 ];
 
-const prices = [
-  { name: "Монтаж перегородок", unit: "м²", price: "1 800" },
-  { name: "Стяжка пола", unit: "м²", price: "650" },
-  { name: "Кладка кирпича", unit: "м²", price: "2 400" },
-  { name: "Армированный бетон", unit: "м³", price: "8 500" },
-  { name: "Кровельные работы", unit: "м²", price: "1 200" },
-  { name: "Утепление фасада", unit: "м²", price: "950" },
-  { name: "Монтаж окон ПВХ", unit: "шт", price: "4 500" },
-  { name: "Штукатурка стен", unit: "м²", price: "420" },
+const priceGroups: PriceGroup[] = [
+  {
+    title: "Монтаж винтовых свай",
+    icon: "RotateCcw",
+    note: "* Указана средняя стоимость за единицу товара, расчёт по каждому заказу индивидуальный. Постоянным клиентам дополнительные скидки и спец. предложения. Возможна продажа свай без монтажа.",
+    items: [
+      { name: "79×3,5×2000 мм", unit: "шт", price: "4 100" },
+      { name: "76×3,5×2500 мм", unit: "шт", price: "4 400" },
+      { name: "76×3,5×3000 мм", unit: "шт", price: "4 700" },
+      { name: "89×3,5×2000 мм", unit: "шт", price: "5 100" },
+      { name: "89×3,5×2500 мм", unit: "шт", price: "5 400" },
+      { name: "89×3,5×3000 мм", unit: "шт", price: "5 700" },
+      { name: "108×4×2000 мм", unit: "шт", price: "6 100" },
+      { name: "108×4×2500 мм", unit: "шт", price: "6 400" },
+      { name: "108×4×3000 мм", unit: "шт", price: "6 700" },
+    ],
+  },
+  {
+    title: "Монтаж жб свай",
+    icon: "Layers",
+    note: "* Стоимость указана за сваю с монтажом (ЗАБИВКА). Обрезка и распушовка свай считается отдельно. Минимальная сумма заказа от 150 000 руб.",
+    items: [
+      { name: "С30.15", unit: "шт", price: "от 8 500" },
+      { name: "С40.15", unit: "шт", price: "от 9 500" },
+      { name: "С30.20", unit: "шт", price: "от 10 000" },
+      { name: "С40.20", unit: "шт", price: "от 11 000" },
+    ],
+  },
+  {
+    title: "Оголовки жб свай",
+    icon: "Package",
+    note: "! Стоимость доставки по Самаре в пределах 30 км от города — бесплатно, далее стоимость доставки необходимо уточнять у менеджера!",
+    items: [
+      { name: "ОГ150×150", unit: "шт", price: "1 100" },
+      { name: "ОГ200×200", unit: "шт", price: "1 300" },
+      { name: "ОГ300×300", unit: "шт", price: "1 500" },
+      { name: "Обрезка сваи", unit: "шт", price: "750" },
+      { name: "Распушовка сваи", unit: "шт", price: "750" },
+    ],
+  },
+  {
+    title: "Шнековое бурение",
+    icon: "Drill",
+    note: "Услуги бурения от 300 до 6 000 руб. за погонный метр, в зависимости от диаметра бурения.",
+    items: [
+      { name: "Ø 100 мм", unit: "п.м.", price: "300" },
+      { name: "Ø 200 мм", unit: "п.м.", price: "300–350" },
+      { name: "Ø 250 мм", unit: "п.м.", price: "300–350" },
+      { name: "Ø 300 мм", unit: "п.м.", price: "300–350" },
+      { name: "Ø 350 мм", unit: "п.м.", price: "400" },
+      { name: "Ø 400 мм", unit: "п.м.", price: "450" },
+      { name: "Ø 500 мм", unit: "п.м.", price: "550" },
+      { name: "Ø 600 мм", unit: "п.м.", price: "650" },
+      { name: "Ø 900 мм", unit: "п.м.", price: "1 500" },
+      { name: "Ø 1250 мм", unit: "п.м.", price: "3 000" },
+      { name: "Ø 1850 мм", unit: "п.м.", price: "6 000" },
+    ],
+  },
+  {
+    title: "Монтаж септиков и колодцев",
+    icon: "Droplets",
+    note: "* Цены указаны в розницу за наличный расчёт, стоимость каждого заказа рассчитывается индивидуально.",
+    items: [
+      { name: "Монтаж септика d=1000 мм", unit: "компл.", price: "от 35 000*" },
+      { name: "Монтаж септика d=1500 мм", unit: "компл.", price: "от 42 000*" },
+      { name: "Монтаж перелива", unit: "шт", price: "от 5 000" },
+      { name: "Монтаж водяного колодца d=1000 мм", unit: "компл.", price: "6 500**" },
+      { name: "Прокладка коммуникаций", unit: "п.м.", price: "от 2 500" },
+      { name: "Скобирование", unit: "шов", price: "1 500" },
+    ],
+  },
 ];
 
 const stats = [
-  { num: "17+", label: "лет на рынке" },
-  { num: "340+", label: "объектов сдано" },
-  { num: "1 200+", label: "довольных клиентов" },
-  { num: "85", label: "специалистов в штате" },
+  { num: "16+", label: "лет на рынке" },
+  { num: "500+", label: "свай смонтировано" },
+  { num: "1 000+", label: "довольных клиентов" },
+  { num: "50+", label: "км коммуникаций" },
 ];
 
 const nav = ["Главная", "О компании", "Услуги", "Прайс", "Контакты"];
@@ -91,8 +160,8 @@ export default function Index() {
       {/* NAVBAR */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        background: scrolled ? "rgba(13,13,13,0.97)" : "transparent",
-        borderBottom: scrolled ? "1px solid rgba(255,102,0,0.3)" : "none",
+        background: scrolled ? "rgba(13,21,32,0.97)" : "transparent",
+        borderBottom: scrolled ? "1px solid rgba(74,154,186,0.35)" : "none",
         transition: "all 0.3s ease",
         backdropFilter: scrolled ? "blur(10px)" : "none",
       }}>
@@ -101,11 +170,34 @@ export default function Index() {
             <div style={{
               width: 42, height: 42, background: "var(--bars-orange)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 22, color: "#0D0D0D"
-            }}>Б</div>
+            }}>
+              <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="58" rx="28" ry="22" fill="#0d1520"/>
+                <ellipse cx="50" cy="55" rx="24" ry="19" fill="#1a2a3a"/>
+                <ellipse cx="38" cy="62" rx="6" ry="4" fill="#0d1520"/>
+                <ellipse cx="62" cy="62" rx="6" ry="4" fill="#0d1520"/>
+                <ellipse cx="38" cy="61" rx="4" ry="3" fill="#4a9aba" opacity="0.7"/>
+                <ellipse cx="62" cy="61" rx="4" ry="3" fill="#4a9aba" opacity="0.7"/>
+                <ellipse cx="50" cy="65" rx="5" ry="3" fill="#c084a0"/>
+                <ellipse cx="44" cy="59" rx="2" ry="2.5" fill="#e8f2f8"/>
+                <ellipse cx="56" cy="59" rx="2" ry="2.5" fill="#e8f2f8"/>
+                <ellipse cx="44.8" cy="59.8" rx="1" ry="1.2" fill="#0d1520"/>
+                <ellipse cx="56.8" cy="59.8" rx="1" ry="1.2" fill="#0d1520"/>
+                <path d="M30 48 Q28 38 24 32 Q30 36 34 46" fill="#1a2a3a"/>
+                <path d="M70 48 Q72 38 76 32 Q70 36 66 46" fill="#1a2a3a"/>
+                <line x1="36" y1="63" x2="24" y2="61" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <line x1="36" y1="65" x2="22" y2="65" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <line x1="36" y1="67" x2="24" y2="70" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <line x1="64" y1="63" x2="76" y2="61" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <line x1="64" y1="65" x2="78" y2="65" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <line x1="64" y1="67" x2="76" y2="70" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <ellipse cx="50" cy="68" rx="3" ry="2" fill="#0d1520" opacity="0.5"/>
+                <path d="M43 55 Q50 52 57 55" stroke="#7a9ab5" strokeWidth="1" fill="none" opacity="0.5"/>
+              </svg>
+            </div>
             <div>
               <div style={{ fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 20, letterSpacing: "0.1em" }}>ООО БАРС</div>
-              <div style={{ fontSize: 10, color: "var(--bars-gray)", letterSpacing: "0.15em" }}>СТРОИТЕЛЬНАЯ КОМПАНИЯ</div>
+              <div style={{ fontSize: 10, color: "var(--bars-gray)", letterSpacing: "0.15em" }}>СВАИ · СЕПТИКИ · КОЛОДЦЫ</div>
             </div>
           </div>
 
@@ -141,7 +233,7 @@ export default function Index() {
 
         {menuOpen && (
           <div className="animate-fade-in-up nav-mobile-menu" style={{
-            background: "rgba(13,13,13,0.98)", borderTop: "1px solid rgba(255,102,0,0.3)",
+            background: "rgba(13,21,32,0.98)", borderTop: "1px solid rgba(74,154,186,0.35)",
             padding: "16px 24px 24px", display: "flex", flexDirection: "column", gap: 4,
           }}>
             {nav.map((item, i) => (
@@ -174,26 +266,26 @@ export default function Index() {
 
       {/* HERO */}
       <section id="home" style={{ position: "relative", height: "100vh", minHeight: 600, display: "flex", alignItems: "center", overflow: "hidden" }}>
-        <img src={HERO_IMG} alt="БАРС строительство" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(13,13,13,0.93) 0%, rgba(13,13,13,0.6) 60%, rgba(13,13,13,0.3) 100%)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(255,102,0,0.07) 0%, transparent 50%)" }} />
+        <img src={HERO_IMG} alt="БАРС — монтаж свай" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(13,21,32,0.94) 0%, rgba(13,21,32,0.65) 60%, rgba(13,21,32,0.3) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(74,154,186,0.08) 0%, transparent 50%)" }} />
         <div style={{ position: "absolute", left: 0, top: "20%", width: 5, height: "60%", background: "linear-gradient(to bottom, transparent, var(--bars-orange), transparent)" }} />
 
         <div style={{ position: "relative", zIndex: 2, maxWidth: 1280, margin: "0 auto", padding: "0 24px", width: "100%" }}>
           <div style={{ maxWidth: 680 }}>
             <div className="animate-fade-in-left" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
               <div style={{ width: 40, height: 2, background: "var(--bars-orange)" }} />
-              <span style={{ color: "var(--bars-orange)", fontSize: 13, letterSpacing: "0.2em", fontFamily: "Oswald, sans-serif", fontWeight: 500 }}>ООО БАРС — С 2007 ГОДА</span>
+              <span style={{ color: "var(--bars-orange)", fontSize: 13, letterSpacing: "0.2em", fontFamily: "Oswald, sans-serif", fontWeight: 500 }}>ООО БАРС — С 2008 ГОДА</span>
             </div>
 
             <h1 className="animate-fade-in-up delay-200 hero-title" style={{ fontSize: 80, lineHeight: 1, fontWeight: 700, marginBottom: 24 }}>
-              <span style={{ display: "block" }}>СТРОИМ</span>
-              <span style={{ display: "block", color: "var(--bars-orange)" }}>НАДЁЖНО</span>
-              <span style={{ display: "block" }}>И В СРОК</span>
+              <span style={{ display: "block" }}>СВАИ.</span>
+              <span style={{ display: "block", color: "var(--bars-orange)" }}>СЕПТИКИ.</span>
+              <span style={{ display: "block" }}>КОЛОДЦЫ.</span>
             </h1>
 
-            <p className="animate-fade-in-up delay-400" style={{ fontSize: 18, color: "rgba(245,245,245,0.8)", lineHeight: 1.6, marginBottom: 40, fontFamily: "Roboto, sans-serif", fontWeight: 300, maxWidth: 500 }}>
-              Гражданское и промышленное строительство, капитальный ремонт. Более 340 объектов сдано в срок.
+            <p className="animate-fade-in-up delay-400" style={{ fontSize: 18, color: "rgba(236,245,241,0.8)", lineHeight: 1.6, marginBottom: 40, fontFamily: "Roboto, sans-serif", fontWeight: 300, maxWidth: 500 }}>
+              Изготовление и монтаж винтовых и забивных свай, прокладка септиков, коммуникаций и колодцев. Работаем с 2008 года.
             </p>
 
             <div className="animate-fade-in-up delay-600" style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
@@ -229,8 +321,8 @@ export default function Index() {
         <div className="animate-ticker" style={{ display: "flex", whiteSpace: "nowrap" }}>
           {[...Array(2)].map((_, i) => (
             <div key={i} style={{ display: "flex" }}>
-              {["СТРОИТЕЛЬСТВО", "РЕМОНТ", "РЕКОНСТРУКЦИЯ", "ФУНДАМЕНТЫ", "КРОВЛЯ", "ФАСАДЫ", "ИНЖЕНЕРНЫЕ СИСТЕМЫ", "ЗЕМЛЯНЫЕ РАБОТЫ"].map((t) => (
-                <span key={t} style={{ fontFamily: "Oswald, sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.15em", color: "#0D0D0D", padding: "0 40px", display: "flex", alignItems: "center", gap: 16 }}>
+              {["ВИНТОВЫЕ СВАИ", "ЗАБИВНЫЕ СВАИ", "СЕПТИКИ", "КОЛОДЦЫ", "КАНАЛИЗАЦИЯ", "ДРЕНАЖ", "КОММУНИКАЦИИ", "ЗЕМЛЯНЫЕ РАБОТЫ"].map((t) => (
+                <span key={t} style={{ fontFamily: "Oswald, sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.15em", color: "#ECF5F1", padding: "0 40px", display: "flex", alignItems: "center", gap: 16 }}>
                   {t} <span style={{ opacity: 0.4 }}>◆</span>
                 </span>
               ))}
@@ -264,18 +356,18 @@ export default function Index() {
                 <div style={{ color: "var(--bars-orange)", fontSize: 12, letterSpacing: "0.2em", fontFamily: "Oswald, sans-serif", marginBottom: 16 }}>О КОМПАНИИ</div>
                 <span className="orange-accent" />
                 <h2 style={{ fontSize: 48, fontWeight: 700, lineHeight: 1.05, marginBottom: 24 }}>
-                  МЫ СТРОИМ<br />
-                  <span style={{ color: "var(--bars-orange)" }}>БУДУЩЕЕ</span><br />
-                  ВАШЕГО БИЗНЕСА
+                  НАДЁЖНЫЙ<br />
+                  <span style={{ color: "var(--bars-orange)" }}>ФУНДАМЕНТ</span><br />
+                  ДЛЯ ВАШЕГО ДОМА
                 </h2>
-                <p style={{ color: "rgba(245,245,245,0.7)", lineHeight: 1.8, marginBottom: 16, fontSize: 16 }}>
-                  ООО БАРС — строительная компания с 17-летней историей. Специализируемся на возведении гражданских и промышленных объектов любой сложности.
+                <p style={{ color: "rgba(236,245,241,0.7)", lineHeight: 1.8, marginBottom: 16, fontSize: 16 }}>
+                  ООО БАРС — компания с 16-летней историей. Специализируемся на изготовлении и монтаже свай, прокладке септиков, канализации и обустройстве колодцев.
                 </p>
-                <p style={{ color: "rgba(245,245,245,0.7)", lineHeight: 1.8, marginBottom: 32, fontSize: 16 }}>
-                  Собственный парк техники, опытные инженеры и чёткое соблюдение сроков — наши главные принципы. Все работы соответствуют ГОСТ и СНиП.
+                <p style={{ color: "rgba(236,245,241,0.7)", lineHeight: 1.8, marginBottom: 32, fontSize: 16 }}>
+                  Собственное производство свай, современная техника и опытные специалисты — работаем быстро и в срок. Соблюдаем все нормы и ГОСТ.
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {["Лицензия СРО и все разрешительные документы", "Собственный парк строительной техники", "Гарантия на все виды работ от 3 лет", "Работаем с НДС, в т.ч. с госзаказами"].map((item) => (
+                  {["Собственное производство винтовых свай", "Гарантия на монтаж от 3 лет", "Работаем по всему региону", "Работаем с НДС и юридическими лицами"].map((item) => (
                     <div key={item} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                       <div style={{ width: 20, height: 20, background: "var(--bars-orange)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
                         <Icon name="Check" size={12} style={{ color: "#0D0D0D" }} />
@@ -289,20 +381,125 @@ export default function Index() {
 
             <Section>
               <div style={{ position: "relative" }}>
-                <img src={TEAM_IMG} alt="Команда БАРС" style={{ width: "100%", height: 480, objectFit: "cover", display: "block" }} />
-                <img src={BUILD_IMG} alt="Объект БАРС" className="animate-float floating-img" style={{
-                  position: "absolute", bottom: -40, right: -40,
-                  width: 220, height: 160, objectFit: "cover",
-                  border: "4px solid var(--bars-dark)",
-                  boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
-                }} />
-                <div style={{ position: "absolute", top: 24, left: 24, background: "var(--bars-orange)", padding: "16px 20px" }}>
-                  <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 36, fontWeight: 700, color: "#0D0D0D", lineHeight: 1 }}>17</div>
-                  <div style={{ fontSize: 11, color: "#0D0D0D", fontWeight: 700, letterSpacing: "0.1em" }}>ЛЕТ ОПЫТА</div>
+                <img src={PILE_IMG} alt="Винтовая свая БАРС" style={{ width: "100%", height: 480, objectFit: "cover", display: "block" }} />
+              </div>
+            </Section>
+          </div>
+        </div>
+      </section>
+
+      {/* PRODUCTION */}
+      <section style={{ padding: "100px 24px", background: "var(--bars-dark-2)" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <Section>
+            <div style={{ textAlign: "center", marginBottom: 64 }}>
+              <div style={{ color: "var(--bars-orange)", fontSize: 12, letterSpacing: "0.2em", fontFamily: "Oswald, sans-serif", marginBottom: 16 }}>СОБСТВЕННОЕ ПРОИЗВОДСТВО</div>
+              <h2 style={{ fontSize: 52, fontWeight: 700 }}>МЫ НЕ ТОЛЬКО <span style={{ color: "var(--bars-orange)" }}>МОНТИРУЕМ</span></h2>
+              <p style={{ color: "var(--bars-gray)", marginTop: 16, fontSize: 17, maxWidth: 700, margin: "16px auto 0" }}>
+                Мы производим винтовые сваи сами — стандартных размеров и по индивидуальным чертежам. Это значит: любой диаметр, любая длина, любая лопасть.
+              </p>
+            </div>
+          </Section>
+
+          <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center", marginBottom: 60 }}>
+            <Section>
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "40px" }}>
+                <svg width="200" height="420" viewBox="0 0 200 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="pileBody" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#2a3a4a"/>
+                      <stop offset="35%" stopColor="#4a9aba" stopOpacity="0.6"/>
+                      <stop offset="60%" stopColor="#1a2a3a"/>
+                      <stop offset="100%" stopColor="#0d1520"/>
+                    </linearGradient>
+                    <linearGradient id="pileTip" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#2a3a4a"/>
+                      <stop offset="100%" stopColor="#0d1520"/>
+                    </linearGradient>
+                    <linearGradient id="bladeGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#3a5a6a"/>
+                      <stop offset="50%" stopColor="#4a9aba" stopOpacity="0.8"/>
+                      <stop offset="100%" stopColor="#1a3a4a"/>
+                    </linearGradient>
+                    <filter id="shadow">
+                      <feDropShadow dx="4" dy="4" stdDeviation="6" floodColor="#000" floodOpacity="0.5"/>
+                    </filter>
+                  </defs>
+                  <rect x="84" y="0" width="32" height="320" rx="16" fill="url(#pileBody)" filter="url(#shadow)"/>
+                  <ellipse cx="100" cy="0" rx="16" ry="6" fill="#3a5a6a"/>
+                  <rect x="88" y="0" width="6" height="320" rx="3" fill="rgba(255,255,255,0.08)"/>
+                  <ellipse cx="100" cy="320" rx="16" ry="6" fill="#2a3a4a"/>
+                  <path d="M84 320 Q100 380 100 400 Q100 380 116 320 Z" fill="url(#pileTip)" filter="url(#shadow)"/>
+                  <path d="M100 300 Q68 285 42 270 Q50 285 60 295 Q70 300 84 310 Q92 315 100 320 Z" fill="url(#bladeGrad)" filter="url(#shadow)"/>
+                  <path d="M100 300 Q68 285 42 270 Q50 258 60 265 Q72 272 84 290 Q92 298 100 300 Z" fill="#2a4a5a" opacity="0.7"/>
+                  <path d="M100 300 Q68 285 42 270" stroke="#6ab8d4" strokeWidth="1.5" opacity="0.5" fill="none"/>
+                  <path d="M44 272 Q46 268 50 270" stroke="#6ab8d4" strokeWidth="1" opacity="0.4" fill="none"/>
+                  <line x1="100" y1="0" x2="100" y2="40" stroke="#6ab8d4" strokeWidth="10" strokeLinecap="round" opacity="0.15"/>
+                  <text x="140" y="160" fill="#4a9aba" fontSize="11" fontFamily="Oswald, sans-serif" opacity="0.7">Ø 76–108</text>
+                  <text x="140" y="175" fill="#4a9aba" fontSize="11" fontFamily="Oswald, sans-serif" opacity="0.7">мм</text>
+                  <line x1="118" y1="160" x2="138" y2="168" stroke="#4a9aba" strokeWidth="0.8" opacity="0.5"/>
+                  <text x="2" y="290" fill="#4a9aba" fontSize="11" fontFamily="Oswald, sans-serif" opacity="0.7">Лопасть</text>
+                  <line x1="54" y1="283" x2="68" y2="285" stroke="#4a9aba" strokeWidth="0.8" opacity="0.5"/>
+                  <text x="115" y="380" fill="#4a9aba" fontSize="11" fontFamily="Oswald, sans-serif" opacity="0.7">Наконечник</text>
+                  <line x1="100" y1="395" x2="113" y2="387" stroke="#4a9aba" strokeWidth="0.8" opacity="0.5"/>
+                </svg>
+              </div>
+            </Section>
+            <Section>
+              <div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                  {[
+                    { icon: "Settings", title: "Стандартные размеры", desc: "Производим сваи по ГОСТ: диаметры 57, 76, 89, 108 мм, длины 2000–3000 мм. Всегда в наличии на складе." },
+                    { icon: "PenTool", title: "Индивидуальные чертежи", desc: "Изготавливаем по вашим размерам — любой диаметр, шаг и диаметр лопасти, нестандартная длина." },
+                    { icon: "Shield", title: "Контроль качества", desc: "Сталь марки Ст3, толщина стенки 3,5–4 мм. Сварные швы проходят контроль. Антикоррозийное покрытие." },
+                    { icon: "Truck", title: "Доставка с завода", desc: "Отгружаем напрямую с производства. Не переплачиваете посредникам. Доставка по Самаре и области." },
+                  ].map((item) => (
+                    <div key={item.title} style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
+                      <div style={{ width: 44, height: 44, background: "rgba(74,154,186,0.12)", border: "1px solid rgba(74,154,186,0.35)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <Icon name={item.icon} size={20} style={{ color: "var(--bars-orange)" }} />
+                      </div>
+                      <div>
+                        <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 17, fontWeight: 600, marginBottom: 6 }}>{item.title}</div>
+                        <div style={{ fontSize: 14, color: "rgba(232,242,248,0.7)", lineHeight: 1.65 }}>{item.desc}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </Section>
           </div>
+
+          <Section>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 4 }} className="services-grid">
+              <div style={{ overflow: "hidden", position: "relative" }}>
+                <img src="https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/bucket/076f1894-817a-4db7-ba3a-f7875202dd38.jpeg" alt="Монтаж свай" style={{ width: "100%", height: 280, objectFit: "cover", display: "block", transition: "transform 0.4s" }}
+                  onMouseEnter={e => ((e.target as HTMLImageElement).style.transform = "scale(1.05)")}
+                  onMouseLeave={e => ((e.target as HTMLImageElement).style.transform = "scale(1)")}
+                />
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(transparent, rgba(13,21,32,0.85))", padding: "20px 16px 14px" }}>
+                  <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 14, color: "var(--bars-light)" }}>Забивные сваи — монтаж</div>
+                </div>
+              </div>
+              <div style={{ overflow: "hidden", position: "relative" }}>
+                <img src="https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/bucket/9a60a863-7cb6-4af3-b4cd-98477b44305e.jpeg" alt="Винтовые сваи" style={{ width: "100%", height: 280, objectFit: "cover", display: "block", transition: "transform 0.4s" }}
+                  onMouseEnter={e => ((e.target as HTMLImageElement).style.transform = "scale(1.05)")}
+                  onMouseLeave={e => ((e.target as HTMLImageElement).style.transform = "scale(1)")}
+                />
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(transparent, rgba(13,21,32,0.85))", padding: "20px 16px 14px" }}>
+                  <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 14, color: "var(--bars-light)" }}>Винтовая свая с лопастью</div>
+                </div>
+              </div>
+              <div style={{ overflow: "hidden", position: "relative" }}>
+                <img src="https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/bucket/4c2624ac-0865-4ec6-bc35-c9a9da3d318b.jpg" alt="Поле свай" style={{ width: "100%", height: 280, objectFit: "cover", display: "block", transition: "transform 0.4s" }}
+                  onMouseEnter={e => ((e.target as HTMLImageElement).style.transform = "scale(1.05)")}
+                  onMouseLeave={e => ((e.target as HTMLImageElement).style.transform = "scale(1)")}
+                />
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(transparent, rgba(13,21,32,0.85))", padding: "20px 16px 14px" }}>
+                  <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 14, color: "var(--bars-light)" }}>Свайный фундамент</div>
+                </div>
+              </div>
+            </div>
+          </Section>
         </div>
       </section>
 
@@ -323,12 +520,11 @@ export default function Index() {
                   border: "1px solid rgba(255,255,255,0.06)", cursor: "pointer",
                   borderTop: "3px solid var(--bars-orange)",
                 }}>
-                  <div style={{ width: 52, height: 52, background: "rgba(255,102,0,0.1)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20, border: "1px solid rgba(255,102,0,0.3)" }}>
+                  <div style={{ width: 52, height: 52, background: "rgba(74,154,186,0.1)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20, border: "1px solid rgba(74,154,186,0.3)" }}>
                     <Icon name={s.icon} size={24} style={{ color: "var(--bars-orange)" }} />
                   </div>
                   <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12, lineHeight: 1.2 }}>{s.title}</h3>
-                  <p style={{ color: "rgba(245,245,245,0.6)", fontSize: 14, lineHeight: 1.7, marginBottom: 20 }}>{s.desc}</p>
-                  <div style={{ color: "var(--bars-orange)", fontFamily: "Oswald, sans-serif", fontWeight: 600, fontSize: 18 }}>{s.price}</div>
+                  <p style={{ color: "rgba(245,245,245,0.6)", fontSize: 14, lineHeight: 1.7 }}>{s.desc}</p>
                 </div>
               </Section>
             ))}
@@ -349,32 +545,52 @@ export default function Index() {
               </div>
             </div>
           </Section>
-          <div className="price-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
-            {prices.map((p, i) => (
-              <Section key={i}>
-                <div className="card-hover" style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                  background: "var(--bars-dark-3)", padding: "24px 32px",
-                  border: "1px solid rgba(255,255,255,0.06)", gap: 16,
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                    <div style={{ width: 4, height: 40, background: "var(--bars-orange)", flexShrink: 0 }} />
-                    <div>
-                      <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 17, fontWeight: 500 }}>{p.name}</div>
-                      <div style={{ fontSize: 12, color: "var(--bars-gray)", marginTop: 2 }}>за {p.unit}</div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 48 }}>
+            {priceGroups.map((group, gi) => (
+              <Section key={gi}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+                    <div style={{ width: 40, height: 40, background: "rgba(74,154,186,0.15)", border: "1px solid rgba(74,154,186,0.4)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <Icon name={group.icon} size={20} style={{ color: "var(--bars-orange)" }} />
                     </div>
+                    <h3 style={{ fontFamily: "Oswald, sans-serif", fontSize: 24, fontWeight: 600, letterSpacing: "0.05em" }}>{group.title}</h3>
+                    <div style={{ flex: 1, height: 1, background: "rgba(74,154,186,0.25)", marginLeft: 8 }} />
                   </div>
-                  <div style={{ textAlign: "right", flexShrink: 0 }}>
-                    <div style={{ fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 24, color: "var(--bars-orange)" }}>{p.price} ₽</div>
+                  <div className="price-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+                    {group.items.map((p, pi) => (
+                      <div key={pi} className="card-hover" style={{
+                        display: "flex", justifyContent: "space-between", alignItems: "center",
+                        background: "var(--bars-dark-3)", padding: "18px 28px",
+                        border: "1px solid rgba(255,255,255,0.05)", gap: 16,
+                      }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                          <div style={{ width: 3, height: 36, background: "var(--bars-orange)", flexShrink: 0 }} />
+                          <div>
+                            <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 16, fontWeight: 500 }}>{p.name}</div>
+                            <div style={{ fontSize: 12, color: "var(--bars-gray)", marginTop: 2 }}>за {p.unit}</div>
+                          </div>
+                        </div>
+                        <div style={{ textAlign: "right", flexShrink: 0 }}>
+                          <div style={{ fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 22, color: "var(--bars-orange)" }}>{p.price} ₽</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
+                  {group.note && (
+                    <div style={{ marginTop: 14, padding: "12px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderLeft: "3px solid rgba(74,154,186,0.5)" }}>
+                      <p style={{ fontSize: 12, color: "var(--bars-gray)", fontFamily: "Roboto, sans-serif", lineHeight: 1.6, margin: 0 }}>{group.note}</p>
+                    </div>
+                  )}
                 </div>
               </Section>
             ))}
           </div>
+
           <Section>
-            <div style={{ marginTop: 48, textAlign: "center" }}>
+            <div style={{ marginTop: 56, textAlign: "center" }}>
               <button onClick={() => scrollTo("contacts")} className="btn-shine" style={{
-                background: "var(--bars-orange)", color: "#0D0D0D",
+                background: "var(--bars-orange)", color: "#ECF5F1",
                 border: "none", padding: "18px 60px", cursor: "pointer",
                 fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 18, letterSpacing: "0.1em", textTransform: "uppercase",
               }}
@@ -398,7 +614,7 @@ export default function Index() {
           <div className="map-layout" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 32, alignItems: "start" }}>
             <Section>
               <div>
-                <div style={{ background: "var(--bars-dark-3)", padding: "32px", border: "1px solid rgba(255,102,0,0.2)", marginBottom: 16, borderLeft: "4px solid var(--bars-orange)" }}>
+                <div style={{ background: "var(--bars-dark-3)", padding: "32px", border: "1px solid rgba(74,154,186,0.2)", marginBottom: 16, borderLeft: "4px solid var(--bars-orange)" }}>
                   <h3 style={{ fontFamily: "Oswald, sans-serif", fontSize: 20, marginBottom: 20, color: "var(--bars-orange)" }}>ОФИС КОМПАНИИ</h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                     {[
@@ -426,7 +642,7 @@ export default function Index() {
               </div>
             </Section>
             <Section>
-              <div style={{ height: 480, overflow: "hidden", border: "2px solid rgba(255,102,0,0.3)" }}>
+              <div style={{ height: 480, overflow: "hidden", border: "2px solid rgba(74,154,186,0.3)" }}>
                 <iframe
                   src="https://yandex.ru/map-widget/v1/?ll=37.617698%2C55.755864&z=9&l=map&pt=37.617698%2C55.755864%2Cpm2rdm&text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0"
                   width="100%" height="100%" frameBorder="0"
@@ -451,7 +667,7 @@ export default function Index() {
           </Section>
           <div className="contacts-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
             <Section>
-              <form style={{ background: "var(--bars-dark-3)", padding: 48, border: "1px solid rgba(255,102,0,0.2)", borderTop: "4px solid var(--bars-orange)" }}>
+              <form style={{ background: "var(--bars-dark-3)", padding: 48, border: "1px solid rgba(74,154,186,0.2)", borderTop: "4px solid var(--bars-orange)" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                   {[
                     { label: "Ваше имя", placeholder: "Иван Петров", type: "text" },
@@ -507,7 +723,7 @@ export default function Index() {
                     border: "1px solid rgba(255,255,255,0.06)",
                     display: "flex", gap: 20, alignItems: "center",
                   }}>
-                    <div style={{ width: 56, height: 56, background: "rgba(255,102,0,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: "1px solid rgba(255,102,0,0.3)" }}>
+                    <div style={{ width: 56, height: 56, background: "rgba(74,154,186,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: "1px solid rgba(74,154,186,0.3)" }}>
                       <Icon name={c.icon} size={24} style={{ color: "var(--bars-orange)" }} />
                     </div>
                     <div>
@@ -524,13 +740,35 @@ export default function Index() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: "#080808", borderTop: "1px solid rgba(255,102,0,0.3)", padding: "40px 24px" }}>
+      <footer style={{ background: "#060c14", borderTop: "1px solid rgba(74,154,186,0.3)", padding: "40px 24px" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 36, height: 36, background: "var(--bars-orange)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 18, color: "#0D0D0D" }}>Б</div>
+            <div style={{ width: 36, height: 36, background: "var(--bars-orange)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="58" rx="28" ry="22" fill="#0d1520"/>
+                <ellipse cx="50" cy="55" rx="24" ry="19" fill="#1a2a3a"/>
+                <ellipse cx="38" cy="62" rx="6" ry="4" fill="#0d1520"/>
+                <ellipse cx="62" cy="62" rx="6" ry="4" fill="#0d1520"/>
+                <ellipse cx="38" cy="61" rx="4" ry="3" fill="#4a9aba" opacity="0.7"/>
+                <ellipse cx="62" cy="61" rx="4" ry="3" fill="#4a9aba" opacity="0.7"/>
+                <ellipse cx="50" cy="65" rx="5" ry="3" fill="#c084a0"/>
+                <ellipse cx="44" cy="59" rx="2" ry="2.5" fill="#e8f2f8"/>
+                <ellipse cx="56" cy="59" rx="2" ry="2.5" fill="#e8f2f8"/>
+                <ellipse cx="44.8" cy="59.8" rx="1" ry="1.2" fill="#0d1520"/>
+                <ellipse cx="56.8" cy="59.8" rx="1" ry="1.2" fill="#0d1520"/>
+                <path d="M30 48 Q28 38 24 32 Q30 36 34 46" fill="#1a2a3a"/>
+                <path d="M70 48 Q72 38 76 32 Q70 36 66 46" fill="#1a2a3a"/>
+                <line x1="36" y1="63" x2="24" y2="61" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <line x1="36" y1="65" x2="22" y2="65" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <line x1="36" y1="67" x2="24" y2="70" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <line x1="64" y1="63" x2="76" y2="61" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <line x1="64" y1="65" x2="78" y2="65" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+                <line x1="64" y1="67" x2="76" y2="70" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
+              </svg>
+            </div>
             <div>
               <div style={{ fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 16 }}>ООО БАРС</div>
-              <div style={{ fontSize: 11, color: "var(--bars-gray)" }}>© 2007–2026. Все права защищены</div>
+              <div style={{ fontSize: 11, color: "var(--bars-gray)" }}>© 2008–2026. Все права защищены</div>
             </div>
           </div>
           <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
