@@ -6,23 +6,94 @@ const PILE_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657
 const SEPTIC_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/96fb2131-7b8e-4fb0-9364-6a48603bcad8.jpg";
 
 const services = [
-  { icon: "Drill", title: "Винтовые сваи", desc: "Изготовление и монтаж винтовых свай для любых типов грунта. Фундаменты под дома, заборы, беседки", price: "от 1 200 ₽/шт" },
-  { icon: "Layers", title: "Забивные сваи", desc: "Производство и погружение железобетонных забивных свай. Подходят для тяжёлых конструкций", price: "от 3 500 ₽/шт" },
-  { icon: "Droplets", title: "Септики и канализация", desc: "Проектирование и монтаж автономных септиков, ливневой и бытовой канализации", price: "от 35 000 ₽" },
-  { icon: "Waves", title: "Колодцы", desc: "Рытьё и обустройство питьевых и технических колодцев. Кольца ЖБИ, донный фильтр, крышка", price: "от 5 000 ₽/кольцо" },
-  { icon: "GitBranch", title: "Прокладка коммуникаций", desc: "Водопровод, канализация, дренаж. Траншейная и бестраншейная прокладка труб", price: "от 800 ₽/пм" },
-  { icon: "Shovel", title: "Земляные работы", desc: "Разработка грунта, копка котлованов и траншей, вывоз и планировка территории", price: "от 1 500 ₽/м³" },
+  { icon: "Drill", title: "Винтовые сваи", desc: "Изготовление и монтаж винтовых свай для любых типов грунта. Фундаменты под дома, заборы, беседки, террасы" },
+  { icon: "Layers", title: "Забивные сваи", desc: "Производство и погружение железобетонных забивных свай. Подходят для тяжёлых конструкций и нестабильных грунтов" },
+  { icon: "Droplets", title: "Септики и канализация", desc: "Проектирование и монтаж автономных септиков, ливневой и бытовой канализации под ключ" },
+  { icon: "Waves", title: "Колодцы", desc: "Рытьё и обустройство питьевых и технических колодцев. Кольца ЖБИ, донный фильтр, крышка" },
+  { icon: "GitBranch", title: "Прокладка коммуникаций", desc: "Водопровод, канализация, дренаж. Траншейная и бестраншейная прокладка труб любого диаметра" },
+  { icon: "Shovel", title: "Бурение", desc: "Бурение под фундамент и под столбы забора. Скважины любой глубины и диаметра" },
 ];
 
-const prices = [
-  { name: "Свая винтовая 57мм × 2500мм", unit: "шт", price: "1 200" },
-  { name: "Свая винтовая 76мм × 3000мм", unit: "шт", price: "1 800" },
-  { name: "Свая винтовая 89мм × 3000мм", unit: "шт", price: "2 400" },
-  { name: "Монтаж сваи (под ключ)", unit: "шт", price: "900" },
-  { name: "Септик бетонные кольца (3 кольца)", unit: "компл.", price: "35 000" },
-  { name: "Колодец (1 кольцо + работа)", unit: "кольцо", price: "5 000" },
-  { name: "Прокладка трубопровода", unit: "пм", price: "800" },
-  { name: "Разработка траншеи экскаватором", unit: "м³", price: "1 500" },
+const priceGroups = [
+  {
+    title: "Септики D1 м",
+    icon: "Droplets",
+    items: [
+      { name: "Кольцо КС 10.9 (1м × 0.9м)", unit: "шт", price: "3 200" },
+      { name: "Монтаж кольца КС 10.9", unit: "шт", price: "1 500" },
+      { name: "Крышка перекрытия 1м", unit: "шт", price: "2 800" },
+      { name: "Днище (дно колодца) 1м", unit: "шт", price: "3 500" },
+      { name: "Септик под ключ (3 кольца)", unit: "компл.", price: "28 000" },
+    ],
+  },
+  {
+    title: "Септики D2 м",
+    icon: "Droplets",
+    items: [
+      { name: "Кольцо КС 20.9 (2м × 0.9м)", unit: "шт", price: "7 500" },
+      { name: "Монтаж кольца КС 20.9", unit: "шт", price: "2 500" },
+      { name: "Крышка перекрытия 2м", unit: "шт", price: "6 000" },
+      { name: "Днище (дно колодца) 2м", unit: "шт", price: "7 000" },
+      { name: "Септик под ключ (3 кольца)", unit: "компл.", price: "52 000" },
+    ],
+  },
+  {
+    title: "Бурение под фундамент",
+    icon: "Drill",
+    items: [
+      { name: "Бурение Ø150мм, до 3м", unit: "шт", price: "2 500" },
+      { name: "Бурение Ø150мм, до 5м", unit: "шт", price: "4 000" },
+      { name: "Бурение Ø200мм, до 3м", unit: "шт", price: "3 500" },
+      { name: "Бурение Ø200мм, до 5м", unit: "шт", price: "5 500" },
+      { name: "Армирование + заливка бетоном", unit: "п.м.", price: "1 200" },
+    ],
+  },
+  {
+    title: "Бурение под забор",
+    icon: "Fence",
+    items: [
+      { name: "Бурение Ø100мм, до 1.5м", unit: "шт", price: "800" },
+      { name: "Бурение Ø100мм, до 2м", unit: "шт", price: "1 100" },
+      { name: "Бурение Ø150мм, до 2м", unit: "шт", price: "1 600" },
+      { name: "Установка столба + бетонирование", unit: "шт", price: "700" },
+    ],
+  },
+  {
+    title: "Винтовые сваи",
+    icon: "RotateCcw",
+    items: [
+      { name: "Свая 57мм × 2500мм", unit: "шт", price: "1 200" },
+      { name: "Свая 57мм × 3000мм", unit: "шт", price: "1 500" },
+      { name: "Свая 76мм × 2500мм", unit: "шт", price: "1 600" },
+      { name: "Свая 76мм × 3000мм", unit: "шт", price: "1 900" },
+      { name: "Свая 89мм × 3000мм", unit: "шт", price: "2 400" },
+      { name: "Монтаж сваи (завинчивание)", unit: "шт", price: "700" },
+      { name: "Оголовок на сваю", unit: "шт", price: "350" },
+    ],
+  },
+  {
+    title: "Забивные сваи",
+    icon: "Layers",
+    items: [
+      { name: "Свая С30-30 (3м)", unit: "шт", price: "2 800" },
+      { name: "Свая С50-30 (5м)", unit: "шт", price: "4 500" },
+      { name: "Свая С60-30 (6м)", unit: "шт", price: "5 800" },
+      { name: "Погружение (забивка) сваи", unit: "шт", price: "1 200" },
+      { name: "Срубка головы сваи", unit: "шт", price: "600" },
+    ],
+  },
+  {
+    title: "Сопутствующие услуги и материалы",
+    icon: "Wrench",
+    items: [
+      { name: "Геотекстиль", unit: "м²", price: "45" },
+      { name: "Труба ПНД 32мм", unit: "п.м.", price: "85" },
+      { name: "Труба ПВХ канализационная 110мм", unit: "п.м.", price: "180" },
+      { name: "Рытьё траншеи (экскаватор)", unit: "м³", price: "1 500" },
+      { name: "Обратная засыпка и трамбовка", unit: "м³", price: "800" },
+      { name: "Вывоз грунта", unit: "м³", price: "1 200" },
+    ],
+  },
 ];
 
 const stats = [
@@ -290,16 +361,6 @@ export default function Index() {
             <Section>
               <div style={{ position: "relative" }}>
                 <img src={PILE_IMG} alt="Винтовая свая БАРС" style={{ width: "100%", height: 480, objectFit: "cover", display: "block" }} />
-                <img src={SEPTIC_IMG} alt="Монтаж септика" className="animate-float floating-img" style={{
-                  position: "absolute", bottom: -40, right: -40,
-                  width: 220, height: 160, objectFit: "cover",
-                  border: "4px solid var(--bars-dark)",
-                  boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
-                }} />
-                <div style={{ position: "absolute", top: 24, left: 24, background: "var(--bars-orange)", padding: "16px 20px" }}>
-                  <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 36, fontWeight: 700, color: "#ECF5F1", lineHeight: 1 }}>16</div>
-                  <div style={{ fontSize: 11, color: "#ECF5F1", fontWeight: 700, letterSpacing: "0.1em" }}>ЛЕТ ОПЫТА</div>
-                </div>
               </div>
             </Section>
           </div>
@@ -327,8 +388,7 @@ export default function Index() {
                     <Icon name={s.icon} size={24} style={{ color: "var(--bars-orange)" }} />
                   </div>
                   <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12, lineHeight: 1.2 }}>{s.title}</h3>
-                  <p style={{ color: "rgba(245,245,245,0.6)", fontSize: 14, lineHeight: 1.7, marginBottom: 20 }}>{s.desc}</p>
-                  <div style={{ color: "var(--bars-orange)", fontFamily: "Oswald, sans-serif", fontWeight: 600, fontSize: 18 }}>{s.price}</div>
+                  <p style={{ color: "rgba(245,245,245,0.6)", fontSize: 14, lineHeight: 1.7 }}>{s.desc}</p>
                 </div>
               </Section>
             ))}
@@ -349,32 +409,47 @@ export default function Index() {
               </div>
             </div>
           </Section>
-          <div className="price-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
-            {prices.map((p, i) => (
-              <Section key={i}>
-                <div className="card-hover" style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                  background: "var(--bars-dark-3)", padding: "24px 32px",
-                  border: "1px solid rgba(255,255,255,0.06)", gap: 16,
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                    <div style={{ width: 4, height: 40, background: "var(--bars-orange)", flexShrink: 0 }} />
-                    <div>
-                      <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 17, fontWeight: 500 }}>{p.name}</div>
-                      <div style={{ fontSize: 12, color: "var(--bars-gray)", marginTop: 2 }}>за {p.unit}</div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 48 }}>
+            {priceGroups.map((group, gi) => (
+              <Section key={gi}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+                    <div style={{ width: 40, height: 40, background: "rgba(26,122,94,0.15)", border: "1px solid rgba(26,122,94,0.4)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <Icon name={group.icon} size={20} style={{ color: "var(--bars-orange)" }} />
                     </div>
+                    <h3 style={{ fontFamily: "Oswald, sans-serif", fontSize: 24, fontWeight: 600, letterSpacing: "0.05em" }}>{group.title}</h3>
+                    <div style={{ flex: 1, height: 1, background: "rgba(26,122,94,0.25)", marginLeft: 8 }} />
                   </div>
-                  <div style={{ textAlign: "right", flexShrink: 0 }}>
-                    <div style={{ fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 24, color: "var(--bars-orange)" }}>{p.price} ₽</div>
+                  <div className="price-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+                    {group.items.map((p, pi) => (
+                      <div key={pi} className="card-hover" style={{
+                        display: "flex", justifyContent: "space-between", alignItems: "center",
+                        background: "var(--bars-dark-3)", padding: "18px 28px",
+                        border: "1px solid rgba(255,255,255,0.05)", gap: 16,
+                      }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                          <div style={{ width: 3, height: 36, background: "var(--bars-orange)", flexShrink: 0 }} />
+                          <div>
+                            <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 16, fontWeight: 500 }}>{p.name}</div>
+                            <div style={{ fontSize: 12, color: "var(--bars-gray)", marginTop: 2 }}>за {p.unit}</div>
+                          </div>
+                        </div>
+                        <div style={{ textAlign: "right", flexShrink: 0 }}>
+                          <div style={{ fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 22, color: "var(--bars-orange)" }}>{p.price} ₽</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </Section>
             ))}
           </div>
+
           <Section>
-            <div style={{ marginTop: 48, textAlign: "center" }}>
+            <div style={{ marginTop: 56, textAlign: "center" }}>
               <button onClick={() => scrollTo("contacts")} className="btn-shine" style={{
-                background: "var(--bars-orange)", color: "#0D0D0D",
+                background: "var(--bars-orange)", color: "#ECF5F1",
                 border: "none", padding: "18px 60px", cursor: "pointer",
                 fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 18, letterSpacing: "0.1em", textTransform: "uppercase",
               }}
