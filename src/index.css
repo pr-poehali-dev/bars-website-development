@@ -25,13 +25,13 @@
     --ring: 25 100% 50%;
     --radius: 0.25rem;
 
-    --bars-orange: #1a7a5e;
-    --bars-orange-light: #22a07c;
-    --bars-dark: #0c1a16;
-    --bars-dark-2: #112219;
-    --bars-dark-3: #172e22;
-    --bars-gray: #6b9980;
-    --bars-light: #ecf5f1;
+    --bars-orange: #ff6600;
+    --bars-orange-light: #ff8833;
+    --bars-dark: #0d0d0d;
+    --bars-dark-2: #151515;
+    --bars-dark-3: #1e1e1e;
+    --bars-gray: #888888;
+    --bars-light: #f5f5f5;
 
     --sidebar-background: 0 0% 8%;
     --sidebar-foreground: 0 0% 98%;
