@@ -1,16 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/ui/icon";
 
-interface PriceGroup {
-  title: string;
-  icon: string;
-  note?: string;
-  items: { name: string; unit: string; price: string }[];
-}
-
 const HERO_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/4d2629cd-5f15-439f-b795-4438ec6b5656.jpg";
-const PILE_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/bucket/9a60a863-7cb6-4af3-b4cd-98477b44305e.jpeg";
-const SEPTIC_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/bucket/daf5e4aa-8265-4e69-91b6-099ebafdf605.jpg";
+const PILE_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/8cae692d-3452-4082-8581-f4947201adf3.jpg";
+const SEPTIC_IMG = "https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/files/96fb2131-7b8e-4fb0-9364-6a48603bcad8.jpg";
 
 const services = [
   { icon: "Drill", title: "Винтовые сваи", desc: "Изготовление и монтаж винтовых свай для любых типов грунта. Фундаменты под дома, заборы, беседки, террасы" },
@@ -21,75 +14,84 @@ const services = [
   { icon: "Shovel", title: "Бурение", desc: "Бурение под фундамент и под столбы забора. Скважины любой глубины и диаметра" },
 ];
 
-const priceGroups: PriceGroup[] = [
+const priceGroups = [
   {
-    title: "Монтаж винтовых свай",
-    icon: "RotateCcw",
-    note: "* Указана средняя стоимость за единицу товара, расчёт по каждому заказу индивидуальный. Постоянным клиентам дополнительные скидки и спец. предложения. Возможна продажа свай без монтажа.",
-    items: [
-      { name: "79×3,5×2000 мм", unit: "шт", price: "4 100" },
-      { name: "76×3,5×2500 мм", unit: "шт", price: "4 400" },
-      { name: "76×3,5×3000 мм", unit: "шт", price: "4 700" },
-      { name: "89×3,5×2000 мм", unit: "шт", price: "5 100" },
-      { name: "89×3,5×2500 мм", unit: "шт", price: "5 400" },
-      { name: "89×3,5×3000 мм", unit: "шт", price: "5 700" },
-      { name: "108×4×2000 мм", unit: "шт", price: "6 100" },
-      { name: "108×4×2500 мм", unit: "шт", price: "6 400" },
-      { name: "108×4×3000 мм", unit: "шт", price: "6 700" },
-    ],
-  },
-  {
-    title: "Монтаж жб свай",
-    icon: "Layers",
-    note: "* Стоимость указана за сваю с монтажом (ЗАБИВКА). Обрезка и распушовка свай считается отдельно. Минимальная сумма заказа от 150 000 руб.",
-    items: [
-      { name: "С30.15", unit: "шт", price: "от 8 500" },
-      { name: "С40.15", unit: "шт", price: "от 9 500" },
-      { name: "С30.20", unit: "шт", price: "от 10 000" },
-      { name: "С40.20", unit: "шт", price: "от 11 000" },
-    ],
-  },
-  {
-    title: "Оголовки жб свай",
-    icon: "Package",
-    note: "! Стоимость доставки по Самаре в пределах 30 км от города — бесплатно, далее стоимость доставки необходимо уточнять у менеджера!",
-    items: [
-      { name: "ОГ150×150", unit: "шт", price: "1 100" },
-      { name: "ОГ200×200", unit: "шт", price: "1 300" },
-      { name: "ОГ300×300", unit: "шт", price: "1 500" },
-      { name: "Обрезка сваи", unit: "шт", price: "750" },
-      { name: "Распушовка сваи", unit: "шт", price: "750" },
-    ],
-  },
-  {
-    title: "Шнековое бурение",
-    icon: "Drill",
-    note: "Услуги бурения от 300 до 6 000 руб. за погонный метр, в зависимости от диаметра бурения.",
-    items: [
-      { name: "Ø 100 мм", unit: "п.м.", price: "300" },
-      { name: "Ø 200 мм", unit: "п.м.", price: "300–350" },
-      { name: "Ø 250 мм", unit: "п.м.", price: "300–350" },
-      { name: "Ø 300 мм", unit: "п.м.", price: "300–350" },
-      { name: "Ø 350 мм", unit: "п.м.", price: "400" },
-      { name: "Ø 400 мм", unit: "п.м.", price: "450" },
-      { name: "Ø 500 мм", unit: "п.м.", price: "550" },
-      { name: "Ø 600 мм", unit: "п.м.", price: "650" },
-      { name: "Ø 900 мм", unit: "п.м.", price: "1 500" },
-      { name: "Ø 1250 мм", unit: "п.м.", price: "3 000" },
-      { name: "Ø 1850 мм", unit: "п.м.", price: "6 000" },
-    ],
-  },
-  {
-    title: "Монтаж септиков и колодцев",
+    title: "Септики D1 м",
     icon: "Droplets",
-    note: "* Цены указаны в розницу за наличный расчёт, стоимость каждого заказа рассчитывается индивидуально.",
     items: [
-      { name: "Монтаж септика d=1000 мм", unit: "компл.", price: "от 35 000*" },
-      { name: "Монтаж септика d=1500 мм", unit: "компл.", price: "от 42 000*" },
-      { name: "Монтаж перелива", unit: "шт", price: "от 5 000" },
-      { name: "Монтаж водяного колодца d=1000 мм", unit: "компл.", price: "6 500**" },
-      { name: "Прокладка коммуникаций", unit: "п.м.", price: "от 2 500" },
-      { name: "Скобирование", unit: "шов", price: "1 500" },
+      { name: "Кольцо КС 10.9 (1м × 0.9м)", unit: "шт", price: "3 200" },
+      { name: "Монтаж кольца КС 10.9", unit: "шт", price: "1 500" },
+      { name: "Крышка перекрытия 1м", unit: "шт", price: "2 800" },
+      { name: "Днище (дно колодца) 1м", unit: "шт", price: "3 500" },
+      { name: "Септик под ключ (3 кольца)", unit: "компл.", price: "28 000" },
+    ],
+  },
+  {
+    title: "Септики D2 м",
+    icon: "Droplets",
+    items: [
+      { name: "Кольцо КС 20.9 (2м × 0.9м)", unit: "шт", price: "7 500" },
+      { name: "Монтаж кольца КС 20.9", unit: "шт", price: "2 500" },
+      { name: "Крышка перекрытия 2м", unit: "шт", price: "6 000" },
+      { name: "Днище (дно колодца) 2м", unit: "шт", price: "7 000" },
+      { name: "Септик под ключ (3 кольца)", unit: "компл.", price: "52 000" },
+    ],
+  },
+  {
+    title: "Бурение под фундамент",
+    icon: "Drill",
+    items: [
+      { name: "Бурение Ø150мм, до 3м", unit: "шт", price: "2 500" },
+      { name: "Бурение Ø150мм, до 5м", unit: "шт", price: "4 000" },
+      { name: "Бурение Ø200мм, до 3м", unit: "шт", price: "3 500" },
+      { name: "Бурение Ø200мм, до 5м", unit: "шт", price: "5 500" },
+      { name: "Армирование + заливка бетоном", unit: "п.м.", price: "1 200" },
+    ],
+  },
+  {
+    title: "Бурение под забор",
+    icon: "Fence",
+    items: [
+      { name: "Бурение Ø100мм, до 1.5м", unit: "шт", price: "800" },
+      { name: "Бурение Ø100мм, до 2м", unit: "шт", price: "1 100" },
+      { name: "Бурение Ø150мм, до 2м", unit: "шт", price: "1 600" },
+      { name: "Установка столба + бетонирование", unit: "шт", price: "700" },
+    ],
+  },
+  {
+    title: "Винтовые сваи",
+    icon: "RotateCcw",
+    items: [
+      { name: "Свая 57мм × 2500мм", unit: "шт", price: "1 200" },
+      { name: "Свая 57мм × 3000мм", unit: "шт", price: "1 500" },
+      { name: "Свая 76мм × 2500мм", unit: "шт", price: "1 600" },
+      { name: "Свая 76мм × 3000мм", unit: "шт", price: "1 900" },
+      { name: "Свая 89мм × 3000мм", unit: "шт", price: "2 400" },
+      { name: "Монтаж сваи (завинчивание)", unit: "шт", price: "700" },
+      { name: "Оголовок на сваю", unit: "шт", price: "350" },
+    ],
+  },
+  {
+    title: "Забивные сваи",
+    icon: "Layers",
+    items: [
+      { name: "Свая С30-30 (3м)", unit: "шт", price: "2 800" },
+      { name: "Свая С50-30 (5м)", unit: "шт", price: "4 500" },
+      { name: "Свая С60-30 (6м)", unit: "шт", price: "5 800" },
+      { name: "Погружение (забивка) сваи", unit: "шт", price: "1 200" },
+      { name: "Срубка головы сваи", unit: "шт", price: "600" },
+    ],
+  },
+  {
+    title: "Сопутствующие услуги и материалы",
+    icon: "Wrench",
+    items: [
+      { name: "Геотекстиль", unit: "м²", price: "45" },
+      { name: "Труба ПНД 32мм", unit: "п.м.", price: "85" },
+      { name: "Труба ПВХ канализационная 110мм", unit: "п.м.", price: "180" },
+      { name: "Рытьё траншеи (экскаватор)", unit: "м³", price: "1 500" },
+      { name: "Обратная засыпка и трамбовка", unit: "м³", price: "800" },
+      { name: "Вывоз грунта", unit: "м³", price: "1 200" },
     ],
   },
 ];
@@ -160,8 +162,8 @@ export default function Index() {
       {/* NAVBAR */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        background: scrolled ? "rgba(13,21,32,0.97)" : "transparent",
-        borderBottom: scrolled ? "1px solid rgba(74,154,186,0.35)" : "none",
+        background: scrolled ? "rgba(12,26,22,0.97)" : "transparent",
+        borderBottom: scrolled ? "1px solid rgba(26,122,94,0.35)" : "none",
         transition: "all 0.3s ease",
         backdropFilter: scrolled ? "blur(10px)" : "none",
       }}>
@@ -170,31 +172,8 @@ export default function Index() {
             <div style={{
               width: 42, height: 42, background: "var(--bars-orange)",
               display: "flex", alignItems: "center", justifyContent: "center",
-            }}>
-              <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="50" cy="58" rx="28" ry="22" fill="#0d1520"/>
-                <ellipse cx="50" cy="55" rx="24" ry="19" fill="#1a2a3a"/>
-                <ellipse cx="38" cy="62" rx="6" ry="4" fill="#0d1520"/>
-                <ellipse cx="62" cy="62" rx="6" ry="4" fill="#0d1520"/>
-                <ellipse cx="38" cy="61" rx="4" ry="3" fill="#4a9aba" opacity="0.7"/>
-                <ellipse cx="62" cy="61" rx="4" ry="3" fill="#4a9aba" opacity="0.7"/>
-                <ellipse cx="50" cy="65" rx="5" ry="3" fill="#c084a0"/>
-                <ellipse cx="44" cy="59" rx="2" ry="2.5" fill="#e8f2f8"/>
-                <ellipse cx="56" cy="59" rx="2" ry="2.5" fill="#e8f2f8"/>
-                <ellipse cx="44.8" cy="59.8" rx="1" ry="1.2" fill="#0d1520"/>
-                <ellipse cx="56.8" cy="59.8" rx="1" ry="1.2" fill="#0d1520"/>
-                <path d="M30 48 Q28 38 24 32 Q30 36 34 46" fill="#1a2a3a"/>
-                <path d="M70 48 Q72 38 76 32 Q70 36 66 46" fill="#1a2a3a"/>
-                <line x1="36" y1="63" x2="24" y2="61" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <line x1="36" y1="65" x2="22" y2="65" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <line x1="36" y1="67" x2="24" y2="70" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <line x1="64" y1="63" x2="76" y2="61" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <line x1="64" y1="65" x2="78" y2="65" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <line x1="64" y1="67" x2="76" y2="70" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <ellipse cx="50" cy="68" rx="3" ry="2" fill="#0d1520" opacity="0.5"/>
-                <path d="M43 55 Q50 52 57 55" stroke="#7a9ab5" strokeWidth="1" fill="none" opacity="0.5"/>
-              </svg>
-            </div>
+              fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 22, color: "#ECF5F1"
+            }}>Б</div>
             <div>
               <div style={{ fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 20, letterSpacing: "0.1em" }}>ООО БАРС</div>
               <div style={{ fontSize: 10, color: "var(--bars-gray)", letterSpacing: "0.15em" }}>СВАИ · СЕПТИКИ · КОЛОДЦЫ</div>
@@ -233,7 +212,7 @@ export default function Index() {
 
         {menuOpen && (
           <div className="animate-fade-in-up nav-mobile-menu" style={{
-            background: "rgba(13,21,32,0.98)", borderTop: "1px solid rgba(74,154,186,0.35)",
+            background: "rgba(12,26,22,0.98)", borderTop: "1px solid rgba(26,122,94,0.35)",
             padding: "16px 24px 24px", display: "flex", flexDirection: "column", gap: 4,
           }}>
             {nav.map((item, i) => (
@@ -267,8 +246,8 @@ export default function Index() {
       {/* HERO */}
       <section id="home" style={{ position: "relative", height: "100vh", minHeight: 600, display: "flex", alignItems: "center", overflow: "hidden" }}>
         <img src={HERO_IMG} alt="БАРС — монтаж свай" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(13,21,32,0.94) 0%, rgba(13,21,32,0.65) 60%, rgba(13,21,32,0.3) 100%)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(74,154,186,0.08) 0%, transparent 50%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(12,26,22,0.94) 0%, rgba(12,26,22,0.65) 60%, rgba(12,26,22,0.3) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(26,122,94,0.08) 0%, transparent 50%)" }} />
         <div style={{ position: "absolute", left: 0, top: "20%", width: 5, height: "60%", background: "linear-gradient(to bottom, transparent, var(--bars-orange), transparent)" }} />
 
         <div style={{ position: "relative", zIndex: 2, maxWidth: 1280, margin: "0 auto", padding: "0 24px", width: "100%" }}>
@@ -388,121 +367,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* PRODUCTION */}
-      <section style={{ padding: "100px 24px", background: "var(--bars-dark-2)" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          <Section>
-            <div style={{ textAlign: "center", marginBottom: 64 }}>
-              <div style={{ color: "var(--bars-orange)", fontSize: 12, letterSpacing: "0.2em", fontFamily: "Oswald, sans-serif", marginBottom: 16 }}>СОБСТВЕННОЕ ПРОИЗВОДСТВО</div>
-              <h2 style={{ fontSize: 52, fontWeight: 700 }}>МЫ НЕ ТОЛЬКО <span style={{ color: "var(--bars-orange)" }}>МОНТИРУЕМ</span></h2>
-              <p style={{ color: "var(--bars-gray)", marginTop: 16, fontSize: 17, maxWidth: 700, margin: "16px auto 0" }}>
-                Мы производим винтовые сваи сами — стандартных размеров и по индивидуальным чертежам. Это значит: любой диаметр, любая длина, любая лопасть.
-              </p>
-            </div>
-          </Section>
-
-          <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center", marginBottom: 60 }}>
-            <Section>
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "40px" }}>
-                <svg width="200" height="420" viewBox="0 0 200 420" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <linearGradient id="pileBody" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#2a3a4a"/>
-                      <stop offset="35%" stopColor="#4a9aba" stopOpacity="0.6"/>
-                      <stop offset="60%" stopColor="#1a2a3a"/>
-                      <stop offset="100%" stopColor="#0d1520"/>
-                    </linearGradient>
-                    <linearGradient id="pileTip" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#2a3a4a"/>
-                      <stop offset="100%" stopColor="#0d1520"/>
-                    </linearGradient>
-                    <linearGradient id="bladeGrad" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#3a5a6a"/>
-                      <stop offset="50%" stopColor="#4a9aba" stopOpacity="0.8"/>
-                      <stop offset="100%" stopColor="#1a3a4a"/>
-                    </linearGradient>
-                    <filter id="shadow">
-                      <feDropShadow dx="4" dy="4" stdDeviation="6" floodColor="#000" floodOpacity="0.5"/>
-                    </filter>
-                  </defs>
-                  <rect x="84" y="0" width="32" height="320" rx="16" fill="url(#pileBody)" filter="url(#shadow)"/>
-                  <ellipse cx="100" cy="0" rx="16" ry="6" fill="#3a5a6a"/>
-                  <rect x="88" y="0" width="6" height="320" rx="3" fill="rgba(255,255,255,0.08)"/>
-                  <ellipse cx="100" cy="320" rx="16" ry="6" fill="#2a3a4a"/>
-                  <path d="M84 320 Q100 380 100 400 Q100 380 116 320 Z" fill="url(#pileTip)" filter="url(#shadow)"/>
-                  <path d="M100 300 Q68 285 42 270 Q50 285 60 295 Q70 300 84 310 Q92 315 100 320 Z" fill="url(#bladeGrad)" filter="url(#shadow)"/>
-                  <path d="M100 300 Q68 285 42 270 Q50 258 60 265 Q72 272 84 290 Q92 298 100 300 Z" fill="#2a4a5a" opacity="0.7"/>
-                  <path d="M100 300 Q68 285 42 270" stroke="#6ab8d4" strokeWidth="1.5" opacity="0.5" fill="none"/>
-                  <path d="M44 272 Q46 268 50 270" stroke="#6ab8d4" strokeWidth="1" opacity="0.4" fill="none"/>
-                  <line x1="100" y1="0" x2="100" y2="40" stroke="#6ab8d4" strokeWidth="10" strokeLinecap="round" opacity="0.15"/>
-                  <text x="140" y="160" fill="#4a9aba" fontSize="11" fontFamily="Oswald, sans-serif" opacity="0.7">Ø 76–108</text>
-                  <text x="140" y="175" fill="#4a9aba" fontSize="11" fontFamily="Oswald, sans-serif" opacity="0.7">мм</text>
-                  <line x1="118" y1="160" x2="138" y2="168" stroke="#4a9aba" strokeWidth="0.8" opacity="0.5"/>
-                  <text x="2" y="290" fill="#4a9aba" fontSize="11" fontFamily="Oswald, sans-serif" opacity="0.7">Лопасть</text>
-                  <line x1="54" y1="283" x2="68" y2="285" stroke="#4a9aba" strokeWidth="0.8" opacity="0.5"/>
-                  <text x="115" y="380" fill="#4a9aba" fontSize="11" fontFamily="Oswald, sans-serif" opacity="0.7">Наконечник</text>
-                  <line x1="100" y1="395" x2="113" y2="387" stroke="#4a9aba" strokeWidth="0.8" opacity="0.5"/>
-                </svg>
-              </div>
-            </Section>
-            <Section>
-              <div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                  {[
-                    { icon: "Settings", title: "Стандартные размеры", desc: "Производим сваи по ГОСТ: диаметры 57, 76, 89, 108 мм, длины 2000–3000 мм. Всегда в наличии на складе." },
-                    { icon: "PenTool", title: "Индивидуальные чертежи", desc: "Изготавливаем по вашим размерам — любой диаметр, шаг и диаметр лопасти, нестандартная длина." },
-                    { icon: "Shield", title: "Контроль качества", desc: "Сталь марки Ст3, толщина стенки 3,5–4 мм. Сварные швы проходят контроль. Антикоррозийное покрытие." },
-                    { icon: "Truck", title: "Доставка с завода", desc: "Отгружаем напрямую с производства. Не переплачиваете посредникам. Доставка по Самаре и области." },
-                  ].map((item) => (
-                    <div key={item.title} style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
-                      <div style={{ width: 44, height: 44, background: "rgba(74,154,186,0.12)", border: "1px solid rgba(74,154,186,0.35)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <Icon name={item.icon} size={20} style={{ color: "var(--bars-orange)" }} />
-                      </div>
-                      <div>
-                        <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 17, fontWeight: 600, marginBottom: 6 }}>{item.title}</div>
-                        <div style={{ fontSize: 14, color: "rgba(232,242,248,0.7)", lineHeight: 1.65 }}>{item.desc}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Section>
-          </div>
-
-          <Section>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 4 }} className="services-grid">
-              <div style={{ overflow: "hidden", position: "relative" }}>
-                <img src="https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/bucket/076f1894-817a-4db7-ba3a-f7875202dd38.jpeg" alt="Монтаж свай" style={{ width: "100%", height: 280, objectFit: "cover", display: "block", transition: "transform 0.4s" }}
-                  onMouseEnter={e => ((e.target as HTMLImageElement).style.transform = "scale(1.05)")}
-                  onMouseLeave={e => ((e.target as HTMLImageElement).style.transform = "scale(1)")}
-                />
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(transparent, rgba(13,21,32,0.85))", padding: "20px 16px 14px" }}>
-                  <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 14, color: "var(--bars-light)" }}>Забивные сваи — монтаж</div>
-                </div>
-              </div>
-              <div style={{ overflow: "hidden", position: "relative" }}>
-                <img src="https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/bucket/9a60a863-7cb6-4af3-b4cd-98477b44305e.jpeg" alt="Винтовые сваи" style={{ width: "100%", height: 280, objectFit: "cover", display: "block", transition: "transform 0.4s" }}
-                  onMouseEnter={e => ((e.target as HTMLImageElement).style.transform = "scale(1.05)")}
-                  onMouseLeave={e => ((e.target as HTMLImageElement).style.transform = "scale(1)")}
-                />
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(transparent, rgba(13,21,32,0.85))", padding: "20px 16px 14px" }}>
-                  <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 14, color: "var(--bars-light)" }}>Винтовая свая с лопастью</div>
-                </div>
-              </div>
-              <div style={{ overflow: "hidden", position: "relative" }}>
-                <img src="https://cdn.poehali.dev/projects/c1127bca-3ac3-4cdc-9f81-f9657c59c334/bucket/4c2624ac-0865-4ec6-bc35-c9a9da3d318b.jpg" alt="Поле свай" style={{ width: "100%", height: 280, objectFit: "cover", display: "block", transition: "transform 0.4s" }}
-                  onMouseEnter={e => ((e.target as HTMLImageElement).style.transform = "scale(1.05)")}
-                  onMouseLeave={e => ((e.target as HTMLImageElement).style.transform = "scale(1)")}
-                />
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(transparent, rgba(13,21,32,0.85))", padding: "20px 16px 14px" }}>
-                  <div style={{ fontFamily: "Oswald, sans-serif", fontSize: 14, color: "var(--bars-light)" }}>Свайный фундамент</div>
-                </div>
-              </div>
-            </div>
-          </Section>
-        </div>
-      </section>
-
       {/* SERVICES */}
       <section id="services" style={{ padding: "100px 24px", background: "var(--bars-dark-2)" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
@@ -520,7 +384,7 @@ export default function Index() {
                   border: "1px solid rgba(255,255,255,0.06)", cursor: "pointer",
                   borderTop: "3px solid var(--bars-orange)",
                 }}>
-                  <div style={{ width: 52, height: 52, background: "rgba(74,154,186,0.1)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20, border: "1px solid rgba(74,154,186,0.3)" }}>
+                  <div style={{ width: 52, height: 52, background: "rgba(255,102,0,0.1)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20, border: "1px solid rgba(255,102,0,0.3)" }}>
                     <Icon name={s.icon} size={24} style={{ color: "var(--bars-orange)" }} />
                   </div>
                   <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12, lineHeight: 1.2 }}>{s.title}</h3>
@@ -551,11 +415,11 @@ export default function Index() {
               <Section key={gi}>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
-                    <div style={{ width: 40, height: 40, background: "rgba(74,154,186,0.15)", border: "1px solid rgba(74,154,186,0.4)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <div style={{ width: 40, height: 40, background: "rgba(26,122,94,0.15)", border: "1px solid rgba(26,122,94,0.4)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                       <Icon name={group.icon} size={20} style={{ color: "var(--bars-orange)" }} />
                     </div>
                     <h3 style={{ fontFamily: "Oswald, sans-serif", fontSize: 24, fontWeight: 600, letterSpacing: "0.05em" }}>{group.title}</h3>
-                    <div style={{ flex: 1, height: 1, background: "rgba(74,154,186,0.25)", marginLeft: 8 }} />
+                    <div style={{ flex: 1, height: 1, background: "rgba(26,122,94,0.25)", marginLeft: 8 }} />
                   </div>
                   <div className="price-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
                     {group.items.map((p, pi) => (
@@ -577,11 +441,6 @@ export default function Index() {
                       </div>
                     ))}
                   </div>
-                  {group.note && (
-                    <div style={{ marginTop: 14, padding: "12px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderLeft: "3px solid rgba(74,154,186,0.5)" }}>
-                      <p style={{ fontSize: 12, color: "var(--bars-gray)", fontFamily: "Roboto, sans-serif", lineHeight: 1.6, margin: 0 }}>{group.note}</p>
-                    </div>
-                  )}
                 </div>
               </Section>
             ))}
@@ -614,7 +473,7 @@ export default function Index() {
           <div className="map-layout" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 32, alignItems: "start" }}>
             <Section>
               <div>
-                <div style={{ background: "var(--bars-dark-3)", padding: "32px", border: "1px solid rgba(74,154,186,0.2)", marginBottom: 16, borderLeft: "4px solid var(--bars-orange)" }}>
+                <div style={{ background: "var(--bars-dark-3)", padding: "32px", border: "1px solid rgba(255,102,0,0.2)", marginBottom: 16, borderLeft: "4px solid var(--bars-orange)" }}>
                   <h3 style={{ fontFamily: "Oswald, sans-serif", fontSize: 20, marginBottom: 20, color: "var(--bars-orange)" }}>ОФИС КОМПАНИИ</h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                     {[
@@ -642,7 +501,7 @@ export default function Index() {
               </div>
             </Section>
             <Section>
-              <div style={{ height: 480, overflow: "hidden", border: "2px solid rgba(74,154,186,0.3)" }}>
+              <div style={{ height: 480, overflow: "hidden", border: "2px solid rgba(255,102,0,0.3)" }}>
                 <iframe
                   src="https://yandex.ru/map-widget/v1/?ll=37.617698%2C55.755864&z=9&l=map&pt=37.617698%2C55.755864%2Cpm2rdm&text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0"
                   width="100%" height="100%" frameBorder="0"
@@ -667,7 +526,7 @@ export default function Index() {
           </Section>
           <div className="contacts-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
             <Section>
-              <form style={{ background: "var(--bars-dark-3)", padding: 48, border: "1px solid rgba(74,154,186,0.2)", borderTop: "4px solid var(--bars-orange)" }}>
+              <form style={{ background: "var(--bars-dark-3)", padding: 48, border: "1px solid rgba(255,102,0,0.2)", borderTop: "4px solid var(--bars-orange)" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                   {[
                     { label: "Ваше имя", placeholder: "Иван Петров", type: "text" },
@@ -723,7 +582,7 @@ export default function Index() {
                     border: "1px solid rgba(255,255,255,0.06)",
                     display: "flex", gap: 20, alignItems: "center",
                   }}>
-                    <div style={{ width: 56, height: 56, background: "rgba(74,154,186,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: "1px solid rgba(74,154,186,0.3)" }}>
+                    <div style={{ width: 56, height: 56, background: "rgba(255,102,0,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: "1px solid rgba(255,102,0,0.3)" }}>
                       <Icon name={c.icon} size={24} style={{ color: "var(--bars-orange)" }} />
                     </div>
                     <div>
@@ -740,32 +599,10 @@ export default function Index() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: "#060c14", borderTop: "1px solid rgba(74,154,186,0.3)", padding: "40px 24px" }}>
+      <footer style={{ background: "#050E0B", borderTop: "1px solid rgba(26,122,94,0.3)", padding: "40px 24px" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 36, height: 36, background: "var(--bars-orange)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="50" cy="58" rx="28" ry="22" fill="#0d1520"/>
-                <ellipse cx="50" cy="55" rx="24" ry="19" fill="#1a2a3a"/>
-                <ellipse cx="38" cy="62" rx="6" ry="4" fill="#0d1520"/>
-                <ellipse cx="62" cy="62" rx="6" ry="4" fill="#0d1520"/>
-                <ellipse cx="38" cy="61" rx="4" ry="3" fill="#4a9aba" opacity="0.7"/>
-                <ellipse cx="62" cy="61" rx="4" ry="3" fill="#4a9aba" opacity="0.7"/>
-                <ellipse cx="50" cy="65" rx="5" ry="3" fill="#c084a0"/>
-                <ellipse cx="44" cy="59" rx="2" ry="2.5" fill="#e8f2f8"/>
-                <ellipse cx="56" cy="59" rx="2" ry="2.5" fill="#e8f2f8"/>
-                <ellipse cx="44.8" cy="59.8" rx="1" ry="1.2" fill="#0d1520"/>
-                <ellipse cx="56.8" cy="59.8" rx="1" ry="1.2" fill="#0d1520"/>
-                <path d="M30 48 Q28 38 24 32 Q30 36 34 46" fill="#1a2a3a"/>
-                <path d="M70 48 Q72 38 76 32 Q70 36 66 46" fill="#1a2a3a"/>
-                <line x1="36" y1="63" x2="24" y2="61" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <line x1="36" y1="65" x2="22" y2="65" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <line x1="36" y1="67" x2="24" y2="70" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <line x1="64" y1="63" x2="76" y2="61" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <line x1="64" y1="65" x2="78" y2="65" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-                <line x1="64" y1="67" x2="76" y2="70" stroke="#e8f2f8" strokeWidth="1.2" opacity="0.6"/>
-              </svg>
-            </div>
+            <div style={{ width: 36, height: 36, background: "var(--bars-orange)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 18, color: "#ECF5F1" }}>Б</div>
             <div>
               <div style={{ fontFamily: "Oswald, sans-serif", fontWeight: 700, fontSize: 16 }}>ООО БАРС</div>
               <div style={{ fontSize: 11, color: "var(--bars-gray)" }}>© 2008–2026. Все права защищены</div>
